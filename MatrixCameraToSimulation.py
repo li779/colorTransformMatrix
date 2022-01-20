@@ -1,5 +1,6 @@
 import numpy as np
 from skimage.io import imread
+from skimage.io import imsave
 from os.path import join
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -90,4 +91,14 @@ for i in range(8):
     renderConvertVec = np.hstack([renderVec, np.array([1])]) @ matrixRenderToMerge
     print(f"render convert vec:{renderConvertVec}")
     print()
+
+
+for i in range(16):
+    imgLeft = np.repeat(dataConvert[i,0:3].reshape((1,1,3)),repeats=50,axis=0)
+    imgRight = np.repeat(dataMerge[i,0:3].reshape((1,1,3)),repeats=50,axis=0)
+    img  = np.repeat(np.vstack([imgLeft,imgRight]),repeats=100,axis=1)/1000
+    img = img.astype("float32")
+    imsave(f"color_patch_{i}.exr",img)
+
+
     
