@@ -92,13 +92,15 @@ for i in range(8):
     print(f"render convert vec:{renderConvertVec}")
     print()
 
-
-for i in range(16):
-    imgLeft = np.repeat(dataConvert[i,0:3].reshape((1,1,3)),repeats=50,axis=0)
-    imgRight = np.repeat(dataMerge[i,0:3].reshape((1,1,3)),repeats=50,axis=0)
-    img  = np.repeat(np.vstack([imgLeft,imgRight]),repeats=100,axis=1)/1000
-    img = img.astype("float32")
-    imsave(f"color_patch_{i}.exr",img)
+fullImage = np.zeros((400,600,3))
+for i in range(4):
+    for j in range(6):
+        imgLeft = np.repeat(dataConvert[i*6+j,0:3].reshape((1,1,3)),repeats=50,axis=0)
+        imgRight = np.repeat(dataMerge[i*6+j,0:3].reshape((1,1,3)),repeats=50,axis=0)
+        img  = np.repeat(np.vstack([imgLeft,imgRight]),repeats=100,axis=1)/1000
+        fullImage[i*100:(i+1)*100,j*100:(j+1)*100,:] = img
+fullImage = fullImage.astype("float32")
+imsave(f"color_patch.exr",fullImage)
 
 
     
