@@ -61,20 +61,22 @@ for i in range(24):
     dataMerge.append(np.average(cameraHDR[y:y+heightMerge,x:x+widthMerge,:],axis=(0,1)))
 
 dataRender = np.vstack(dataRender)
-dataRender = np.hstack([dataRender,np.ones((24,1))])
 dataMerge = np.vstack(dataMerge)
+
+# white balancing
+renderVec = dataRender[18,:]
+mergeVec = dataMerge[18,:]
+alpha = np.sum(mergeVec)/np.sum(renderVec)
+renderVec = alpha* renderVec
+
+dataRender = np.hstack([dataRender,np.ones((24,1))])
 dataMerge = np.hstack([dataMerge, np.ones((24,1))])
 print(dataRender.shape)
 # R @ T = M (N,3) (3,3) = (N,3)
 matrixRenderToMerge = np.linalg.pinv(dataRender) @ dataMerge
 
-# white balancing
-renderVec = dataRender[18,:]
-mergeVec = dataMerge[18,:]
-alpha = np.sum(mergeVec)/np.sum(renderVec @ matrixRenderToMerge)
-
 # error
-dataConvert = (dataRender @ matrixRenderToMerge)*alpha
+dataConvert = dataRender @ matrixRenderToMerge
 error = np.average(np.linalg.norm(dataConvert-dataMerge,axis=0))/np.average(np.linalg.norm(dataMerge,axis=0))
 print(f'Least square error is {error}')
 
